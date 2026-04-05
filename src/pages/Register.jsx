@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User, Mail, Eye, EyeOff, Handshake } from 'lucide-react';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -22,10 +24,24 @@ const Register = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Registration Data:', formData);
-    // Add registration logic here
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, password: formData.password })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert('Đăng ký thành công! Vui lòng đăng nhập.');
+        navigate('/login'); // Chuyển hướng tới login dùng useNavigate
+      } else {
+        alert(data.message || 'Lỗi đăng ký');
+      }
+    } catch (error) {
+       alert('Không thể kết nối đến server');
+    }
   };
 
   return (

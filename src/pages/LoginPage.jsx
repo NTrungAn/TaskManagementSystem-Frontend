@@ -1,4 +1,5 @@
 import { useId, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import heartHandshake from '../assets/login/heart-handshake.svg'
 import iconEmail from '../assets/login/icon-email.svg'
 import iconEye from '../assets/login/icon-eye.svg'
@@ -9,6 +10,7 @@ import gridSquares from '../assets/login/grid-squares.png'
 import './LoginPage.css'
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -26,6 +28,7 @@ export default function LoginPage() {
       if (response.ok) {
         alert('Đăng nhập thành công!');
         localStorage.setItem('token', data.token); // Lưu token nếu cần
+        navigate('/dashboard'); // Chuyển hướng tới dashboard sau khi đăng nhập thành công
       } else {
         alert(data.message || 'Lỗi đăng nhập');
       }
@@ -35,21 +38,7 @@ export default function LoginPage() {
   };
 
   const handleRegister = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await response.json();
-      if (response.ok) {
-        alert('Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.');
-      } else {
-        alert(data.message || 'Lỗi đăng ký');
-      }
-    } catch (error) {
-      alert('Không thể kết nối đến server');
-    }
+    navigate('/register');
   };
 
   return (
