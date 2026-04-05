@@ -30,7 +30,7 @@ export default function Sidebar({ collapsed, onToggle }) {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const response = await fetch('http://localhost:5000/api/auth/me', {
+        const response = await fetch('https://taskmanagementsystem-backend-v1-0.onrender.com/api/auth/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {

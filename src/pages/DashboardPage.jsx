@@ -26,7 +26,7 @@ export default function DashboardPage() {
         if (!token) return;
 
         // Fetch projects to count
-        const projRes = await fetch('http://localhost:5000/api/projects', {
+        const projRes = await fetch('https://taskmanagementsystem-backend-v1-0.onrender.com/api/projects', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const projData = await projRes.json();
@@ -37,12 +37,12 @@ export default function DashboardPage() {
 
         // Fetch tasks for each project to get counts (Optimization: backend should provide this)
         for (const p of projects) {
-            const boardRes = await fetch(`http://localhost:5000/api/projects/${p.id}/boards`, {
+            const boardRes = await fetch(`https://taskmanagementsystem-backend-v1-0.onrender.com/api/projects/${p.id}/boards`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const boardData = await boardRes.json();
             if (boardData.boards && boardData.boards.length > 0) {
-                const boardDetail = await fetch(`http://localhost:5000/api/boards/${boardData.boards[0].id}`, {
+                const boardDetail = await fetch(`https://taskmanagementsystem-backend-v1-0.onrender.com/api/boards/${boardData.boards[0].id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const detailData = await boardDetail.json();
