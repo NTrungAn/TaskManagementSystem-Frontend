@@ -70,7 +70,7 @@ export default function BoardPage() {
       if (!token) return;
 
       // 1. Fetch current project info to display name
-      const projRes = await fetch(`http://localhost:5000/api/projects`, {
+      const projRes = await fetch(`https://taskmanagementsystem-backend-v1-0.onrender.com/api/projects`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const projData = await projRes.json();
@@ -78,14 +78,14 @@ export default function BoardPage() {
       if (currentProj) setProject(currentProj);
 
       // 2. Fetch boards for this specific project
-      const boardsRes = await fetch(`http://localhost:5000/api/projects/${projectId}/boards`, {
+      const boardsRes = await fetch(`https://taskmanagementsystem-backend-v1-0.onrender.com/api/projects/${projectId}/boards`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const boardsData = await boardsRes.json();
 
       if (boardsRes.ok && boardsData.boards && boardsData.boards.length > 0) {
         const firstBoardId = boardsData.boards[0].id;
-        const boardDetailRes = await fetch(`http://localhost:5000/api/boards/${firstBoardId}`, {
+        const boardDetailRes = await fetch(`https://taskmanagementsystem-backend-v1-0.onrender.com/api/boards/${firstBoardId}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const boardDetailData = await boardDetailRes.json();
@@ -94,7 +94,7 @@ export default function BoardPage() {
         }
       } else if (boardsRes.ok) {
         // TỰ ĐỘNG TẠO BOARD NẾU PROJECT CHƯA CÓ
-        const createBoardRes = await fetch('http://localhost:5000/api/boards', {
+        const createBoardRes = await fetch('https://taskmanagementsystem-backend-v1-0.onrender.com/api/boards', {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ export default function BoardPage() {
       // For cross-column or reorder, we use the reorder API which handles positional updates
       const targetTaskIds = newColumns[destColIndex].tasks.map(t => t.id);
       
-      await fetch('http://localhost:5000/api/tasks/reorder', {
+      await fetch('https://taskmanagementsystem-backend-v1-0.onrender.com/api/tasks/reorder', {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export default function BoardPage() {
     if (!newTaskTitle.trim()) return;
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch('https://taskmanagementsystem-backend-v1-0.onrender.com/api/tasks', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

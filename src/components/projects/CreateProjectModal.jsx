@@ -13,7 +13,7 @@ export default function CreateProjectModal({ isOpen, onClose, onCreated }) {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/projects', {
+      const response = await fetch('https://taskmanagementsystem-backend-v1-0.onrender.com/api/projects', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

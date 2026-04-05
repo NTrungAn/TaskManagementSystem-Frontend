@@ -22,7 +22,7 @@ export default function ProjectsDashboard() {
           setProjects(MOCK_PROJECTS);
           return;
         }
-        const response = await fetch('http://localhost:5000/api/projects', {
+        const response = await fetch('https://taskmanagementsystem-backend-v1-0.onrender.com/api/projects', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
