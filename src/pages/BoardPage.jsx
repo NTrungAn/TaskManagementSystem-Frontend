@@ -1,5 +1,3 @@
-import { useLayout } from '../components/layout/AppLayout';
-
 /**
  * Demo page for Kanban Board view
  * Renders the project board with task columns
@@ -86,3 +84,4 @@ export default function BoardPage() {
     </div>
   );
 }
+
