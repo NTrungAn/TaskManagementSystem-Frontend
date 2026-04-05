@@ -1,0 +1,22 @@
+# Các thư viện phụ thuộc (Nặng nhất, tuyệt đối không đưa lên)
+node_modules/
+dist/
+build/
+
+# Các file log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Các file cấu hình cá nhân hoặc môi trường (Chứa mật khẩu, API key)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Các file của Editor/Hệ điều hành
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
