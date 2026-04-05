@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/LoginPage.jsx';
 import BoardPage from './pages/BoardPage.jsx';
+import Register from './pages/Register.jsx';
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Protected / App routes with layout */}
         <Route element={<AppLayout />}>
@@ -33,12 +35,11 @@ function App() {
           } />
         </Route>
 
-        {/* Default redirect */}
-        <Route path="*" element={<Navigate to="/projects" replace />} />
+        {/* Default redirect: send to register for testing */}
+        <Route path="*" element={<Navigate to="/register" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
-
