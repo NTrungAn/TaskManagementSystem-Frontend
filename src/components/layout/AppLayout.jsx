@@ -1,7 +1,8 @@
-import { useState, createContext, useContext } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { useState, createContext, useContext, useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import ProjectHeader from './ProjectHeader';
+import CreateProjectModal from '../projects/CreateProjectModal';
 
 // Context for layout state
 const LayoutContext = createContext({});
@@ -9,19 +10,56 @@ export const useLayout = () => useContext(LayoutContext);
 
 /**
  * AppLayout – main shell wrapping Sidebar + content area
- * Sidebar can be collapsed by clicking the toggle button.
- * ProjectHeader is shown when on project-related routes.
  */
 export default function AppLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState('board');
+  const [user, setUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Show ProjectHeader only on project detail pages
-  const showProjectHeader = location.pathname.startsWith('/projects');
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Nếu không có token, chuyển hướng về trang login ngay lập tức
+      navigate('/login');
+      return;
+    }
+
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+        } else {
+          // Token hết hạn hoặc không hợp lệ
+          localStorage.removeItem('token');
+          navigate('/login');
+        }
+      } catch (err) {
+        console.error('AppLayout user fetch error:', err);
+      }
+    };
+    fetchUser();
+  }, [navigate]);
+
+  // Handle refresh projects - in a real app, use a hook or global state
+  const handleProjectCreated = (newProject) => {
+    // Refreshing current project list if on Projects page
+    if (location.pathname === '/projects' || location.pathname === '/dashboard') {
+        window.location.reload(); 
+    }
+  };
+
+  // Show ProjectHeader only on project-related routes
+  const showProjectHeader = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/projects');
 
   return (
-    <LayoutContext.Provider value={{ sidebarCollapsed, activeTab, setActiveTab }}>
+    <LayoutContext.Provider value={{ sidebarCollapsed, activeTab, setActiveTab, user }}>
       <div className="flex h-screen bg-gray-50 overflow-hidden">
         {/* Sidebar */}
         <Sidebar
@@ -34,15 +72,8 @@ export default function AppLayout() {
           {/* Project Header (only on project routes) */}
           {showProjectHeader && (
             <ProjectHeader
-              projectName="Project"
-              pageName="Website bán laptop"
-              members={[
-                { name: 'Alice', initials: 'A' },
-                { name: 'Bob', initials: 'B' },
-                { name: 'Carol', initials: 'C' },
-              ]}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
+              userName={user?.username || 'Guest'}
+              onCreateClick={() => setIsModalOpen(true)}
             />
           )}
 
@@ -51,6 +82,13 @@ export default function AppLayout() {
             <Outlet />
           </main>
         </div>
+
+        {/* Modal Project */}
+        <CreateProjectModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onCreated={handleProjectCreated}
+        />
       </div>
     </LayoutContext.Provider>
   );

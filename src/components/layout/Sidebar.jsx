@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Heart,
+  User,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -21,6 +22,32 @@ const NAV_ITEMS = [
 export default function Sidebar({ collapsed, onToggle }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await fetch('http://localhost:5000/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUserData(data.user);
+        }
+      } catch (err) {
+        console.error('Failed to fetch user', err);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
 
   const isActive = (path) => location.pathname.startsWith(path);
 
@@ -73,9 +100,27 @@ export default function Sidebar({ collapsed, onToggle }) {
         })}
       </nav>
 
+      {/* User Info */}
+      {userData && (
+        <div className={`px-3 py-4 border-t border-gray-100 ${collapsed ? 'flex justify-center' : ''}`}>
+          <div className={`flex items-center gap-3 p-2 rounded-xl bg-gray-50 ${collapsed ? 'justify-center' : ''}`}>
+            <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+               {userData.username ? userData.username.charAt(0).toUpperCase() : 'U'}
+            </div>
+            {!collapsed && (
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-bold text-gray-800 truncate">{userData.username}</span>
+                <span className="text-[10px] text-gray-500 truncate">Online</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Bottom: Logout */}
       <div className={`px-3 pb-6 ${collapsed ? 'flex justify-center' : ''}`}>
         <button
+          onClick={handleLogout}
           className={`
             w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium
             text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all duration-150 cursor-pointer underline

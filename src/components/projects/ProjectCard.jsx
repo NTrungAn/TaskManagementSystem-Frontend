@@ -1,14 +1,25 @@
 import { MoreHorizontal, Calendar, ChevronRight } from 'lucide-react';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProjectCard({ 
+  id,
   status = "ACTIVE", 
   title = "Website bán laptop", 
   dateRange = "Mar 01 - Mar 31", 
   progress = 77 
 }) {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    if (id) navigate(`/projects/${id}/board`);
+  };
+
   return (
-    <div className="w-[300px] h-[310px] bg-white rounded-[20px] shadow-sm hover:shadow-md transition-shadow relative p-7 flex flex-col border border-gray-100">
+    <div 
+      onClick={handleCardClick}
+      className="w-[300px] h-[310px] bg-white rounded-[20px] shadow-sm hover:shadow-md transition-all relative p-7 flex flex-col border border-gray-100 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+    >
       
       {/* Options Menu Icon */}
       <button className="absolute top-4 right-4 text-black hover:bg-gray-100 rounded-full p-1 transition-colors">

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Filter, LayoutGrid } from 'lucide-react';
 import ProjectCard from './ProjectCard';
 
-// Mock data matching the Figma card repetitions
+// Dummy data matching the Figma card repetitions for fallback
 const MOCK_PROJECTS = Array(6).fill(null).map((_, i) => ({
-  id: i,
+  id: `mock-${i}`,
   status: "ACTIVE",
   title: "Website bán laptop",
   dateRange: "Mar 01 - Mar 31",
@@ -12,6 +12,38 @@ const MOCK_PROJECTS = Array(6).fill(null).map((_, i) => ({
 }));
 
 export default function ProjectsDashboard() {
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setProjects(MOCK_PROJECTS);
+          return;
+        }
+        const response = await fetch('http://localhost:5000/api/projects', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (response.ok && data.projects) {
+          const mappedProjects = data.projects.map(p => ({
+            id: p.id,
+            status: "ACTIVE",
+            title: p.name,
+            dateRange: p.created_at ? new Date(p.created_at).toLocaleDateString() : "Present",
+            progress: 0
+          }));
+          setProjects(mappedProjects.length > 0 ? mappedProjects : MOCK_PROJECTS);
+        } else {
+          setProjects(MOCK_PROJECTS);
+        }
+      } catch (err) {
+        setProjects(MOCK_PROJECTS);
+      }
+    };
+    fetchProjects();
+  }, []);
   return (
     <div className="w-full h-full p-8 overflow-y-auto">
       
@@ -44,9 +76,10 @@ export default function ProjectsDashboard() {
 
       {/* Projects Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 xl:gap-8 pb-12">
-        {MOCK_PROJECTS.map((project) => (
+        {projects.map((project) => (
           <div key={project.id} className="flex justify-center md:justify-start">
              <ProjectCard 
+               id={project.id}
                status={project.status}
                title={project.title}
                dateRange={project.dateRange}
