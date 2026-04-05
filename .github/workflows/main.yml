@@ -21,6 +21,12 @@ jobs:
       - name: 3. Build and push Frontend Image
         uses: docker/build-push-action@v4
         with:
-          context: .    # Chú ý: Đổi thành dấu chấm (.)
+          context: .    
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/taskmanagementsystem-frontend:latest
+
+      # ==========================================
+      # GIAI ĐOẠN ĐÍCH: DEPLOY (Triển khai lên Render)
+      # ==========================================
+      - name: 4. Trigger Render Deployment
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
