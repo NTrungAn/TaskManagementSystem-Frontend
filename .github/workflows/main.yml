@@ -24,8 +24,8 @@ jobs:
           context: .    
           push: true
           tags: |
-            nguyentrungan/taskmanagementsystem-frontend:latest
-            nguyentrungan/taskmanagementsystem-frontend:v1.0
+            ${{ secrets.DOCKER_USERNAME }}/taskmanagementsystem-frontend:latest
+            ${{ secrets.DOCKER_USERNAME }}/taskmanagementsystem-frontend:v1.0
 
       # ==========================================
       # GIAI ĐOẠN ĐÍCH: DEPLOY (Triển khai lên Render)

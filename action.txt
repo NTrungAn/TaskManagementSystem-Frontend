@@ -1,0 +1,3 @@
+success fix: push v1.0 tag to match render configuration
+success Merge branch 'feature/docker' of https://github.co
+success Add Render deployment trigger after frontend build
